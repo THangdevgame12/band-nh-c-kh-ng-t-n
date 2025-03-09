@@ -89,12 +89,18 @@
         let bandName = localStorage.getItem("bandName") || "(điền tên của bạn ở đây)";
 
         // Số fan mỗi lần nhấp chuột
-        let fansPerClick = parseInt(localStorage.getItem("fansPerClick") || "1"); // Lấy từ localStorage
+        let fansPerClick = parseInt(localStorage.getItem("fansPerClick") || "1");
 
         // Kiểm tra và sao lưu thành tựu
         let achievementUnlocked = localStorage.getItem("achievementUnlocked") === "true";
+        let famousAchievementUnlocked = localStorage.getItem("famousAchievementUnlocked") === "true";
+        
         if (achievementUnlocked) {
-            document.getElementById("achievementText").innerText = "Vô tri lắm!";
+            document.getElementById("achievementText").innerText += "\nVô tri lắm!";
+        }
+        
+        if (famousAchievementUnlocked) {
+            document.getElementById("achievementText").innerText += "\nBắt đầu nổi tiếng rồi đấy!";
         }
 
         document.getElementById("score").innerText = "Tiền kiếm được💵: " + score;
@@ -124,7 +130,7 @@
             document.getElementById("score").innerText = "Tiền kiếm được💵: " + score;
 
             // Tăng số fan mỗi lần nhấp chuột
-            let newFans = Math.floor(Math.random() * (fansPerClick * 3)) + 1; // Tăng số fan theo fansPerClick
+            let newFans = Math.floor(Math.random() * (fansPerClick * 3)) + 1;
             fans += newFans;
             localStorage.setItem("fans", fans);
             document.getElementById("fansCount").innerText = "Fan hâm mộ: " + fans;
@@ -132,7 +138,13 @@
             // Kiểm tra nếu đạt được thành tựu (1 triệu đồng)
             if (score >= 1000000 && !achievementUnlocked) {
                 localStorage.setItem("achievementUnlocked", "true");
-                document.getElementById("achievementText").innerText = "Cả band nhạc rất biết ơn bạn!";
+                document.getElementById("achievementText").innerText += "\nVô tri lắm!";
+            }
+
+            // Kiểm tra nếu đạt được thành tựu (5000 fan)
+            if (fans >= 5000 && !famousAchievementUnlocked) {
+                localStorage.setItem("famousAchievementUnlocked", "true");
+                document.getElementById("achievementText").innerText += "\nBắt đầu nổi tiếng rồi đấy!";
             }
         });
 

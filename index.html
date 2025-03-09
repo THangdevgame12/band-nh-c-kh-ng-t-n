@@ -95,8 +95,13 @@
         let achievementUnlocked = localStorage.getItem("achievementUnlocked") === "true";
         let famousAchievementUnlocked = localStorage.getItem("famousAchievementUnlocked") === "true";
         
+        // Chỉ hiển thị thành tựu khi người chơi có thành tựu
+        if (achievementUnlocked || famousAchievementUnlocked) {
+            document.getElementById("achievementText").innerText = ""; // Xóa câu "Chưa có thành tựu nào"
+        }
+
         if (achievementUnlocked) {
-            document.getElementById("achievementText").innerText += "\nDamn bro, bạn đã cứu sống cả band nhạc!";
+            document.getElementById("achievementText").innerText += "\nVô tri lắm!";
         }
         
         if (famousAchievementUnlocked) {
@@ -138,7 +143,7 @@
             // Kiểm tra nếu đạt được thành tựu (1 triệu đồng)
             if (score >= 1000000 && !achievementUnlocked) {
                 localStorage.setItem("achievementUnlocked", "true");
-                document.getElementById("achievementText").innerText += "\nVô tri lắm!";
+                document.getElementById("achievementText").innerText += "\nDamn bro, bạn đã cứu sống cả band nhạc!";
             }
 
             // Kiểm tra nếu đạt được thành tựu (5000 fan)

@@ -151,7 +151,7 @@
             // Kiểm tra nếu đạt được thành tựu (5000 fan)
             if (fans >= 5000 && !famousAchievementUnlocked) {
                 localStorage.setItem("famousAchievementUnlocked", "true");
-                document.getElementById("achievementText").innerText = "Bắt đầu nổi tiếng rồi đấy!";
+                document.getElementById("achievementText").innerText += "\nBắt đầu nổi tiếng rồi đấy!";
             }
         });
 

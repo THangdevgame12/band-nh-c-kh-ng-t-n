@@ -100,10 +100,12 @@
             document.getElementById("achievementText").innerText = ""; // Xóa câu "Chưa có thành tựu nào"
         }
 
+        // Nếu có thành tựu "Bro, bạn cứu sống band nhạc nhờ autoclick"
         if (achievementUnlocked) {
-            document.getElementById("achievementText").innerText += "\nDamn bro, bạn đã cứu sống cả band nhạc!";
+            document.getElementById("achievementText").innerText += "\nBro, bạn cứu sống band nhạc nhờ autoclick";
         }
         
+        // Nếu có thành tựu "Bắt đầu nổi tiếng rồi đấy!"
         if (famousAchievementUnlocked) {
             document.getElementById("achievementText").innerText += "\nBắt đầu nổi tiếng rồi đấy!";
         }
@@ -143,13 +145,13 @@
             // Kiểm tra nếu đạt được thành tựu (1 triệu đồng)
             if (score >= 1000000 && !achievementUnlocked) {
                 localStorage.setItem("achievementUnlocked", "true");
-                document.getElementById("achievementText").innerText += "\nDamn bro, bạn đã cứu sống cả band nhạc!";
+                document.getElementById("achievementText").innerText = "Bro, bạn cứu sống band nhạc nhờ autoclick";
             }
 
             // Kiểm tra nếu đạt được thành tựu (5000 fan)
             if (fans >= 5000 && !famousAchievementUnlocked) {
                 localStorage.setItem("famousAchievementUnlocked", "true");
-                document.getElementById("achievementText").innerText += "\nBắt đầu nổi tiếng rồi đấy!";
+                document.getElementById("achievementText").innerText = "Bắt đầu nổi tiếng rồi đấy!";
             }
         });
 

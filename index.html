@@ -89,7 +89,13 @@
         let bandName = localStorage.getItem("bandName") || "(điền tên của bạn ở đây)";
 
         // Số fan mỗi lần nhấp chuột
-        let fansPerClick = 1; // Ban đầu là 1 fan mỗi lần nhấp chuột
+        let fansPerClick = parseInt(localStorage.getItem("fansPerClick") || "1"); // Lấy từ localStorage
+
+        // Kiểm tra và sao lưu thành tựu
+        let achievementUnlocked = localStorage.getItem("achievementUnlocked") === "true";
+        if (achievementUnlocked) {
+            document.getElementById("achievementText").innerText = "Vô tri lắm!";
+        }
 
         document.getElementById("score").innerText = "Tiền kiếm được💵: " + score;
         document.getElementById("fansCount").innerText = "Fan hâm mộ: " + fans;
@@ -122,6 +128,12 @@
             fans += newFans;
             localStorage.setItem("fans", fans);
             document.getElementById("fansCount").innerText = "Fan hâm mộ: " + fans;
+
+            // Kiểm tra nếu đạt được thành tựu (1 triệu đồng)
+            if (score >= 1000000 && !achievementUnlocked) {
+                localStorage.setItem("achievementUnlocked", "true");
+                document.getElementById("achievementText").innerText = "Cả band nhạc rất biết ơn bạn!";
+            }
         });
 
         document.getElementById("upgradeButton").addEventListener("click", function() {

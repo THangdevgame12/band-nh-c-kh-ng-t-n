@@ -14,15 +14,7 @@
             font-size: 20px;
             padding: 15px 30px;
             cursor: pointer;
-            border-radius: 50px; /* Làm tròn các góc */
-            border: none;
-            background-color: #4CAF50; /* Màu xanh nổi bật */
-            color: white;
-            font-weight: bold;
-            transition: 0.3s; /* Hiệu ứng mượt khi hover */
-        }
-        #clickButton:hover {
-            background-color: #45a049; /* Màu tối hơn khi hover */
+            border-radius: 20px; /* Bo tròn */
         }
         #score, #earningsPerClick, #fansCount {
             font-size: 24px;
@@ -80,16 +72,15 @@
     <div class="upgrade-board">
         <h3>Nâng cấp</h3>
         <button id="upgradeButton">Nâng cấp thu nhập (<span id="upgradeCost">100000</span> đồng)</button>
-        <button id="upgradeMusicButton">Nâng cấp âm nhạc (500000 đồng)</button>
+        <button id="upgradeMusicButton">Nâng cấp âm nhạc (<span id="musicUpgradeCost">500000</span> đồng)</button>
         <p id="upgradeMessage" class="upgrade-message">Không đủ tiền để nâng cấp!</p>
-        <p id="musicUpgradeMessage" class="upgrade-message">Không đủ tiền để nâng cấp âm nhạc!</p>
     </div>
 
     <div class="achievement-board">
         <h3>Thành tựu</h3>
         <p id="achievementText">Chưa có thành tựu nào</p>
     </div>
-    
+
     <script>
         let score = parseInt(localStorage.getItem("score") || "0");
         let fans = parseInt(localStorage.getItem("fans") || "0");
@@ -103,42 +94,40 @@
         document.getElementById("fansCount").innerText = "Fan hâm mộ: " + fans;
         document.getElementById("earningsPerClick").innerText = "Thu nhập mỗi lần lưu diễn: 1000 - " + earnings + " đồng";
         document.getElementById("upgradeCost").innerText = upgradeCost;
+        document.getElementById("musicUpgradeCost").innerText = musicUpgradeCost;
         document.getElementById("bandName").innerText = bandName;
 
         function updateAchievements() {
             let achievementText = document.getElementById("achievementText");
-            achievementText.innerHTML = "";
-            
+            let newAchievements = [];
+
             if (score >= 1000000 && !achievements.includes("autoclick_savior")) {
                 achievements.push("autoclick_savior");
-                achievementText.innerHTML += "<p>Bro, bạn cứu sống band nhạc nhờ autoclick</p>";
+                newAchievements.push("Bro, bạn cứu sống band nhạc nhờ autoclick");
             }
             if (fans >= 5000 && !achievements.includes("famous")) {
                 achievements.push("famous");
-                achievementText.innerHTML += "<p>Bắt đầu nổi tiếng rồi đấy!</p>";
-            }
-
-            if (achievements.length === 0) {
-                achievementText.innerHTML = "Chưa có thành tựu nào";
+                newAchievements.push("Bắt đầu nổi tiếng rồi đấy!");
             }
 
             localStorage.setItem("achievements", JSON.stringify(achievements));
+
+            if (achievements.length > 0) {
+                achievementText.innerHTML = achievements.map(a => {
+                    if (a === "autoclick_savior") return "<p>Bro, bạn cứu sống band nhạc nhờ autoclick</p>";
+                    if (a === "famous") return "<p>Bắt đầu nổi tiếng rồi đấy!</p>";
+                    return "";
+                }).join("");
+            } else {
+                achievementText.innerHTML = "Chưa có thành tựu nào";
+            }
+
+            if (newAchievements.length > 0) {
+                alert("Chúc mừng! Bạn đã đạt được thành tựu:\n- " + newAchievements.join("\n- "));
+            }
         }
 
         updateAchievements();
-
-        document.getElementById("resetButton").addEventListener("click", function() {
-            localStorage.clear();
-            location.reload();
-        });
-
-        document.getElementById("setNameButton").addEventListener("click", function() {
-            let newName = document.getElementById("nameInput").value;
-            if (newName) {
-                localStorage.setItem("bandName", newName);
-                document.getElementById("bandName").innerText = newName;
-            }
-        });
 
         document.getElementById("clickButton").addEventListener("click", function() {
             let earned = [1000, 2000, 3000, 4000, 5000, earnings][Math.floor(Math.random() * 6)];
@@ -164,8 +153,7 @@
                 localStorage.setItem("earnings", earnings);
                 document.getElementById("score").innerText = "Tiền kiếm được💵: " + score;
                 document.getElementById("upgradeCost").innerText = upgradeCost;
-                document.getElementById("earningsPerClick").innerText = "Thu nhập mỗi lần lưu diễn: 1000 - " + earnings + " đồng";
-            } 
+            }
         });
 
         document.getElementById("upgradeMusicButton").addEventListener("click", function() {
@@ -177,7 +165,7 @@
                 localStorage.setItem("musicUpgradeCost", musicUpgradeCost);
                 localStorage.setItem("fans", fans);
                 document.getElementById("fansCount").innerText = "Fan hâm mộ: " + fans;
-                document.getElementById("upgradeMusicButton").innerText = "Nâng cấp âm nhạc (" + musicUpgradeCost + " đồng)";
+                document.getElementById("musicUpgradeCost").innerText = musicUpgradeCost;
             }
         });
     </script>

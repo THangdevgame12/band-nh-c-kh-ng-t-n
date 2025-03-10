@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Band nhạc không tên</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        #clickButton, #recordButton {
+            font-size: 20px;
+            padding: 15px 30px;
+            cursor: pointer;
+            border-radius: 20px;
+            margin: 5px;
+        }
+        #score, #earningsPerClick, #fansCount {
+            font-size: 24px;
+            margin-top: 20px;
+        }
+        #resetButton {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 10px;
+            padding: 3px 6px;
+            cursor: pointer;
+        }
+        .upgrade-board, .achievement-board {
+            position: absolute;
+            width: 250px;
+            padding: 20px;
+            border: 2px solid black;
+            background-color: #f9f9f9;
+            text-align: left;
+        }
+        .upgrade-board {
+            right: 20px;
+            top: 50px;
+        }
+        .achievement-board {
+            left: 20px;
+            top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <button id="resetButton">Reset</button>
+    <input type="text" id="nameInput" placeholder="Nhập tên ban nhạc...">
+    <button id="setNameButton">Lưu tên</button>
+    <h1>Band nhạc: <span id="bandName"></span></h1>
+
+    <button id="clickButton">Đi lưu diễn🎤</button>
+    <button id="recordButton">Thu âm nhạc🎵 (-5 triệu đồng)</button>
+
+    <p id="score">Tiền kiếm được💵: 0</p>
+    <p id="fansCount">Fan hâm mộ: 0</p>
+    <p id="earningsPerClick">Thu nhập mỗi lần lưu diễn: 1000 - 5000 đồng</p>
+    
+    <div class="upgrade-board">
+        <h3>Nâng cấp</h3>
+        <button id="upgradeButton">Nâng cấp thu nhập (<span id="upgradeCost">100000</span> đồng)</button>
+        <button id="upgradeExperienceButton">Nâng cấp trải nghiệm nghe nhạc (<span id="experienceUpgradeCost">1500000</span> đồng)</button>
+    </div>
+
+    <div class="achievement-board">
+        <h3>Thành tựu</h3>
+        <p id="achievementText">Chưa có thành tựu nào</p>
+    </div>
+
+    <script>
+        let score = parseInt(localStorage.getItem("score") || "0");
+        let fans = parseInt(localStorage.getItem("fans") || "0");
+        let earnings = parseInt(localStorage.getItem("earnings") || "5000");
+        let upgradeCost = parseInt(localStorage.getItem("upgradeCost") || "100000");
+        let experienceUpgradeCost = parseInt(localStorage.getItem("experienceUpgradeCost") || "1500000");
+        let bandName = localStorage.getItem("bandName") || "(điền tên của bạn ở đây)";
+        let achievements = JSON.parse(localStorage.getItem("achievements") || "[]");
+
+        function updateUI() {
+            document.getElementById("score").innerText = "Tiền kiếm được💵: " + score;
+            document.getElementById("fansCount").innerText = "Fan hâm mộ: " + fans;
+            document.getElementById("earningsPerClick").innerText = "Thu nhập mỗi lần lưu diễn: 1000 - " + earnings + " đồng";
+            document.getElementById("upgradeCost").innerText = upgradeCost;
+            document.getElementById("experienceUpgradeCost").innerText = experienceUpgradeCost;
+            document.getElementById("bandName").innerText = bandName;
+            document.getElementById("achievementText").innerText = achievements.length > 0 ? achievements.join(", ") : "Chưa có thành tựu nào";
+        }
+        updateUI();
+
+        document.getElementById("resetButton").addEventListener("click", function() {
+            localStorage.clear();
+            location.reload();
+        });
+
+        document.getElementById("setNameButton").addEventListener("click", function() {
+            bandName = document.getElementById("nameInput").value;
+            localStorage.setItem("bandName", bandName);
+            updateUI();
+        });
+
+        document.getElementById("clickButton").addEventListener("click", function() {
+            let earned = Math.floor(Math.random() * 4001) + 1000;
+            score += earned;
+            localStorage.setItem("score", score);
+            updateUI();
+        });
+
+        document.getElementById("upgradeButton").addEventListener("click", function() {
+            if (score >= upgradeCost) {
+                score -= upgradeCost;
+                upgradeCost *= 2;
+                earnings += 1000;
+                localStorage.setItem("score", score);
+                localStorage.setItem("upgradeCost", upgradeCost);
+                localStorage.setItem("earnings", earnings);
+                updateUI();
+                alert("Nâng cấp thu nhập thành công! 💰");
+            } else {
+                alert("Không đủ tiền để nâng cấp thu nhập!");
+            }
+        });
+
+        document.getElementById("upgradeExperienceButton").addEventListener("click", function() {
+            if (score >= experienceUpgradeCost) {
+                score -= experienceUpgradeCost;
+                fans += Math.floor(Math.random() * 10) + 1;
+                experienceUpgradeCost += 500000;
+                localStorage.setItem("score", score);
+                localStorage.setItem("fans", fans);
+                localStorage.setItem("experienceUpgradeCost", experienceUpgradeCost);
+                updateUI();
+                alert("Nâng cấp trải nghiệm nghe nhạc thành công! 🎧");
+            } else {
+                alert("Không đủ tiền để nâng cấp trải nghiệm nghe nhạc!");
+            }
+        });
+    </script>
+</body>
+</html>

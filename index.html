@@ -63,6 +63,7 @@
     <div class="upgrade-board">
         <h3>Nâng cấp</h3>
         <button id="upgradeButton">Nâng cấp thu nhập (<span id="upgradeCost">100000</span> đồng)</button>
+        <button id="upgradeExperienceButton">Nâng cấp trải nghiệm nghe nhạc (<span id="experienceUpgradeCost">1500000</span> đồng)</button>
     </div>
 
     <div class="achievement-board">
@@ -75,6 +76,7 @@
         let fans = parseInt(localStorage.getItem("fans") || "0");
         let earnings = parseInt(localStorage.getItem("earnings") || "5000");
         let upgradeCost = parseInt(localStorage.getItem("upgradeCost") || "100000");
+        let experienceUpgradeCost = parseInt(localStorage.getItem("experienceUpgradeCost") || "1500000");
         let bandName = localStorage.getItem("bandName") || "(điền tên của bạn ở đây)";
         let achievements = JSON.parse(localStorage.getItem("achievements") || "[]");
 
@@ -83,6 +85,7 @@
             document.getElementById("fansCount").innerText = "Fan hâm mộ: " + fans;
             document.getElementById("earningsPerClick").innerText = "Thu nhập mỗi lần lưu diễn: 1000 - " + earnings + " đồng";
             document.getElementById("upgradeCost").innerText = upgradeCost;
+            document.getElementById("experienceUpgradeCost").innerText = experienceUpgradeCost;
             document.getElementById("bandName").innerText = bandName;
             document.getElementById("achievementText").innerText = achievements.length > 0 ? achievements.join(", ") : "Chưa có thành tựu nào";
         }
@@ -99,40 +102,20 @@
             updateUI();
         });
 
-        document.getElementById("clickButton").addEventListener("click", function() {
-            let earned = [1000, 2000, 3000, 4000, 5000, earnings][Math.floor(Math.random() * 6)];
-            score += earned;
-            fans += Math.floor(Math.random() * 3) + 1;
-            localStorage.setItem("score", score);
-            localStorage.setItem("fans", fans);
-            checkAchievements();
-            updateUI();
-        });
-
-        document.getElementById("recordButton").addEventListener("click", function() {
-            if (score >= 5000000) {
-                score -= 5000000;
-                score += 3500000;
-                fans += 1000;
+        document.getElementById("upgradeExperienceButton").addEventListener("click", function() {
+            if (score >= experienceUpgradeCost) {
+                score -= experienceUpgradeCost;
+                fans += Math.floor(Math.random() * 10) + 1;
+                experienceUpgradeCost += 500000;
                 localStorage.setItem("score", score);
                 localStorage.setItem("fans", fans);
-                checkAchievements();
+                localStorage.setItem("experienceUpgradeCost", experienceUpgradeCost);
                 updateUI();
-                alert("Bạn đã thu âm nhạc thành công! 🎶");
+                alert("Nâng cấp trải nghiệm nghe nhạc thành công! 🎧");
             } else {
-                alert("Không đủ tiền để thu âm nhạc!");
+                alert("Không đủ tiền để nâng cấp trải nghiệm nghe nhạc!");
             }
         });
-
-        function checkAchievements() {
-            if (score >= 1000000 && !achievements.includes("Bro sử dụng autoclick để cứu lấy band nhạc")) {
-                achievements.push("Bro sử dụng autoclick để cứu lấy band nhạc");
-            }
-            if (score >= 5000000 && !achievements.includes("Bro đã cứu lấy band nhạc bằng auto click")) {
-                achievements.push("Bro đã cứu lấy band nhạc bằng auto click");
-            }
-            localStorage.setItem("achievements", JSON.stringify(achievements));
-        }
     </script>
 </body>
 </html>

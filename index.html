@@ -10,11 +10,12 @@
             text-align: center;
             margin: 50px;
         }
-        #clickButton {
+        #clickButton, #recordButton {
             font-size: 20px;
             padding: 15px 30px;
             cursor: pointer;
-            border-radius: 20px; /* Bo tròn */
+            border-radius: 20px;
+            margin: 5px;
         }
         #score, #earningsPerClick, #fansCount {
             font-size: 24px;
@@ -28,34 +29,21 @@
             padding: 3px 6px;
             cursor: pointer;
         }
-        .upgrade-board {
+        .upgrade-board, .achievement-board {
             position: absolute;
+            width: 250px;
+            padding: 20px;
+            border: 2px solid black;
+            background-color: #f9f9f9;
+            text-align: left;
+        }
+        .upgrade-board {
             right: 20px;
             top: 50px;
-            width: 250px;
-            padding: 20px;
-            border: 2px solid black;
-            background-color: #f9f9f9;
-            text-align: left;
-        }
-        .upgrade-board button {
-            display: block;
-            width: 100%;
-            margin-top: 10px;
         }
         .achievement-board {
-            position: absolute;
             left: 20px;
             top: 50px;
-            width: 250px;
-            padding: 20px;
-            border: 2px solid black;
-            background-color: #f9f9f9;
-            text-align: left;
-        }
-        .upgrade-message {
-            color: red;
-            display: none;
         }
     </style>
 </head>
@@ -64,7 +52,10 @@
     <input type="text" id="nameInput" placeholder="Nhập tên ban nhạc...">
     <button id="setNameButton">Lưu tên</button>
     <h1>Band nhạc: <span id="bandName"></span></h1>
+
     <button id="clickButton">Đi lưu diễn🎤</button>
+    <button id="recordButton">Thu âm nhạc🎵 (-1 triệu đồng)</button>
+
     <p id="score">Tiền kiếm được💵: 0</p>
     <p id="fansCount">Fan hâm mộ: 0</p>
     <p id="earningsPerClick">Thu nhập mỗi lần lưu diễn: 1000 - 5000 đồng</p>
@@ -73,7 +64,6 @@
         <h3>Nâng cấp</h3>
         <button id="upgradeButton">Nâng cấp thu nhập (<span id="upgradeCost">100000</span> đồng)</button>
         <button id="upgradeMusicButton">Nâng cấp âm nhạc (<span id="musicUpgradeCost">500000</span> đồng)</button>
-        <p id="upgradeMessage" class="upgrade-message">Không đủ tiền để nâng cấp!</p>
     </div>
 
     <div class="achievement-board">
@@ -90,57 +80,51 @@
         let bandName = localStorage.getItem("bandName") || "(điền tên của bạn ở đây)";
         let achievements = JSON.parse(localStorage.getItem("achievements") || "[]");
 
-        document.getElementById("score").innerText = "Tiền kiếm được💵: " + score;
-        document.getElementById("fansCount").innerText = "Fan hâm mộ: " + fans;
-        document.getElementById("earningsPerClick").innerText = "Thu nhập mỗi lần lưu diễn: 1000 - " + earnings + " đồng";
-        document.getElementById("upgradeCost").innerText = upgradeCost;
-        document.getElementById("musicUpgradeCost").innerText = musicUpgradeCost;
-        document.getElementById("bandName").innerText = bandName;
-
-        function updateAchievements() {
-            let achievementText = document.getElementById("achievementText");
-            let newAchievements = [];
-
-            if (score >= 1000000 && !achievements.includes("autoclick_savior")) {
-                achievements.push("autoclick_savior");
-                newAchievements.push("Bro, bạn cứu sống band nhạc nhờ autoclick");
-            }
-            if (fans >= 5000 && !achievements.includes("famous")) {
-                achievements.push("famous");
-                newAchievements.push("Bắt đầu nổi tiếng rồi đấy!");
-            }
-
-            localStorage.setItem("achievements", JSON.stringify(achievements));
-
-            if (achievements.length > 0) {
-                achievementText.innerHTML = achievements.map(a => {
-                    if (a === "autoclick_savior") return "<p>Bro, bạn cứu sống band nhạc nhờ autoclick</p>";
-                    if (a === "famous") return "<p>Bắt đầu nổi tiếng rồi đấy!</p>";
-                    return "";
-                }).join("");
-            } else {
-                achievementText.innerHTML = "Chưa có thành tựu nào";
-            }
-
-            if (newAchievements.length > 0) {
-                alert("Chúc mừng! Bạn đã đạt được thành tựu:\n- " + newAchievements.join("\n- "));
-            }
+        function updateUI() {
+            document.getElementById("score").innerText = "Tiền kiếm được💵: " + score;
+            document.getElementById("fansCount").innerText = "Fan hâm mộ: " + fans;
+            document.getElementById("earningsPerClick").innerText = "Thu nhập mỗi lần lưu diễn: 1000 - " + earnings + " đồng";
+            document.getElementById("upgradeCost").innerText = upgradeCost;
+            document.getElementById("musicUpgradeCost").innerText = musicUpgradeCost;
+            document.getElementById("bandName").innerText = bandName;
+            document.getElementById("achievementText").innerText = achievements.length > 0 ? achievements.join(", ") : "Chưa có thành tựu nào";
         }
+        updateUI();
 
-        updateAchievements();
+        document.getElementById("resetButton").addEventListener("click", function() {
+            localStorage.clear();
+            location.reload();
+        });
+
+        document.getElementById("setNameButton").addEventListener("click", function() {
+            bandName = document.getElementById("nameInput").value;
+            localStorage.setItem("bandName", bandName);
+            updateUI();
+        });
 
         document.getElementById("clickButton").addEventListener("click", function() {
             let earned = [1000, 2000, 3000, 4000, 5000, earnings][Math.floor(Math.random() * 6)];
             score += earned;
+            fans += Math.floor(Math.random() * 3) + 1;
             localStorage.setItem("score", score);
-            document.getElementById("score").innerText = "Tiền kiếm được💵: " + score;
-
-            let newFans = Math.floor(Math.random() * 3) + 1;
-            fans += newFans;
             localStorage.setItem("fans", fans);
-            document.getElementById("fansCount").innerText = "Fan hâm mộ: " + fans;
+            checkAchievements();
+            updateUI();
+        });
 
-            updateAchievements();
+        document.getElementById("recordButton").addEventListener("click", function() {
+            if (score >= 1000000) {
+                score -= 1000000;
+                score += 500000;
+                fans += 1000;
+                localStorage.setItem("score", score);
+                localStorage.setItem("fans", fans);
+                checkAchievements();
+                updateUI();
+                alert("Bạn đã thu âm nhạc thành công! 🎶");
+            } else {
+                alert("Không đủ tiền để thu âm nhạc!");
+            }
         });
 
         document.getElementById("upgradeButton").addEventListener("click", function() {
@@ -151,23 +135,20 @@
                 localStorage.setItem("score", score);
                 localStorage.setItem("upgradeCost", upgradeCost);
                 localStorage.setItem("earnings", earnings);
-                document.getElementById("score").innerText = "Tiền kiếm được💵: " + score;
-                document.getElementById("upgradeCost").innerText = upgradeCost;
+                checkAchievements();
+                updateUI();
             }
         });
 
-        document.getElementById("upgradeMusicButton").addEventListener("click", function() {
-            if (score >= musicUpgradeCost) {
-                score -= musicUpgradeCost;
-                musicUpgradeCost *= 2;
-                fans += 500;
-                localStorage.setItem("score", score);
-                localStorage.setItem("musicUpgradeCost", musicUpgradeCost);
-                localStorage.setItem("fans", fans);
-                document.getElementById("fansCount").innerText = "Fan hâm mộ: " + fans;
-                document.getElementById("musicUpgradeCost").innerText = musicUpgradeCost;
+        function checkAchievements() {
+            if (score >= 1000000 && !achievements.includes("Damn bro, cứu lấy band nhạc bằng auto click")) {
+                achievements.push("Damn bro, cứu lấy band nhạc bằng auto click");
             }
-        });
+            if (fans >= 1000 && !achievements.includes("It's nổi tiếng time")) {
+                achievements.push("It's nổi tiếng time");
+            }
+            localStorage.setItem("achievements", JSON.stringify(achievements));
+        }
     </script>
 </body>
 </html>

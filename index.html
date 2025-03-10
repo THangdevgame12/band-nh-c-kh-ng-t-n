@@ -54,7 +54,7 @@
     <h1>Band nhạc: <span id="bandName"></span></h1>
 
     <button id="clickButton">Đi lưu diễn🎤</button>
-    <button id="recordButton">Thu âm nhạc🎵 (-1 triệu đồng)</button>
+    <button id="recordButton">Thu âm nhạc🎵 (-5 triệu đồng)</button>
 
     <p id="score">Tiền kiếm được💵: 0</p>
     <p id="fansCount">Fan hâm mộ: 0</p>
@@ -113,9 +113,9 @@
         });
 
         document.getElementById("recordButton").addEventListener("click", function() {
-            if (score >= 1000000) {
-                score -= 1000000;
-                score += 500000;
+            if (score >= 5000000) {
+                score -= 5000000;
+                score += 3500000;
                 fans += 1000;
                 localStorage.setItem("score", score);
                 localStorage.setItem("fans", fans);
@@ -126,29 +126,6 @@
                 alert("Không đủ tiền để thu âm nhạc!");
             }
         });
-
-        document.getElementById("upgradeButton").addEventListener("click", function() {
-            if (score >= upgradeCost) {
-                score -= upgradeCost;
-                upgradeCost *= 2;
-                earnings += 1000;
-                localStorage.setItem("score", score);
-                localStorage.setItem("upgradeCost", upgradeCost);
-                localStorage.setItem("earnings", earnings);
-                checkAchievements();
-                updateUI();
-            }
-        });
-
-        function checkAchievements() {
-            if (score >= 1000000 && !achievements.includes("Damn bro, cứu lấy band nhạc bằng auto click")) {
-                achievements.push("Damn bro, cứu lấy band nhạc bằng auto click");
-            }
-            if (fans >= 1000 && !achievements.includes("It's nổi tiếng time")) {
-                achievements.push("It's nổi tiếng time");
-            }
-            localStorage.setItem("achievements", JSON.stringify(achievements));
-        }
     </script>
 </body>
 </html>

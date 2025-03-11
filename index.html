@@ -68,7 +68,7 @@
 
     <div class="achievement-board">
         <h3>Thành tựu</h3>
-        <p id="achievementText">Chưa có thành tựu nào</p>
+        <p id="achievementText"></p>
     </div>
 
     <script>
@@ -87,7 +87,7 @@
             document.getElementById("upgradeCost").innerText = upgradeCost;
             document.getElementById("musicUpgradeCost").innerText = musicUpgradeCost;
             document.getElementById("bandName").innerText = bandName;
-            document.getElementById("achievementText").innerText = achievements.length > 0 ? achievements.join(", ") : "Chưa có thành tựu nào";
+            document.getElementById("achievementText").innerHTML = achievements.length > 0 ? achievements.join("<br>") : "Chưa có thành tựu nào";
         }
         updateUI();
 
@@ -115,7 +115,7 @@
         document.getElementById("recordButton").addEventListener("click", function() {
             if (score >= 5000000) {
                 score -= 5000000;
-                score += 2000000;
+                score += 2500000;
                 fans += 1000;
                 localStorage.setItem("score", score);
                 localStorage.setItem("fans", fans);
